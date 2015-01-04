@@ -62,30 +62,40 @@
   (for [row board]
     (set row)))
 
+(defn valid-set? [xs]
+  (= xs #{1 2 3 4 5 6 7 8 9}))
+
 (defn valid-rows? [board]
-  nil)
+  (every? valid-set? (rows board)))
 
 (defn cols [board]
   (for [col (range 0 9)]
     (set (col-values board [0 col]))))
 
 (defn valid-cols? [board]
-  nil)
+  (every? valid-set? (cols board)))
 
 (defn blocks [board]
-  nil)
+  (for [x [0 3 6]
+        y [0 3 6]]
+    (set (block-values board [x y]))))
 
 (defn valid-blocks? [board]
-  nil)
+  (every? valid-set? (blocks board)))
 
 (defn valid-solution? [board]
-  nil)
+  (and (valid-rows? board) 
+       (valid-cols? board)
+       (valid-blocks? board)))
 
 (defn set-value-at [board coord new-value]
-  nil)
+  (assoc-in board coord new-value))
 
 (defn find-empty-point [board]
-  nil)
+  (let [coords (for [row [0 1 2 3 4 5 6 7 8]
+                     col [0 1 2 3 4 5 6 7 8]]
+                 [row col])]
+   (if (= 0 (value-at board [coord])))))
 
 (defn solve [board]
   nil)
