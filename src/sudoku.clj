@@ -3,38 +3,71 @@
 
 (def board identity)
 
+(def all-values #{1 2 3 4 5 6 7 8 9})
+
+(def example-board 
+       [[5 3 0 0 7 0 0 0 0]
+        [6 0 0 1 9 5 0 0 0]
+        [0 9 8 0 0 0 0 6 0]
+        [8 0 0 0 6 0 0 0 3]
+        [4 0 0 8 0 3 0 0 1]
+        [7 0 0 0 2 0 0 0 6]
+        [0 6 0 0 0 0 2 8 0]
+        [0 0 0 4 1 9 0 0 5]
+        [0 0 0 0 8 0 0 7 9]])
+
 (defn value-at [board coord]
-  nil)
+  (get-in board coord))
 
 (defn has-value? [board coord]
-  nil)
+  (not (zero? (value-at board coord))))
 
 (defn row-values [board coord]
-  nil)
+  (set (get board (first coord))))
 
 (defn col-values [board coord]
-  nil)
+  (set (map (fn [x] (get x (second coord))) 
+            board)))
 
 (defn coord-pairs [coords]
-  nil)
+  (for [row coords
+        col coords]
+    (vector row col)))
 
 (defn block-values [board coord]
-  nil)
+  (let [min-block (fn [x] (cond 
+                            (< x 3) 0
+                            (< x 6) 3
+                            :else 6))
+        upper-left (fn [x] (map min-block coord))]
+    (set (for [xrange (range 
+                  (first (upper-left coord)) 
+                  (+ (first (upper-left coord)) 3))
+               yrange (range 
+                  (second (upper-left coord)) 
+                  (+ (second (upper-left coord)) 3))]
+      (get-in board [xrange yrange])))))
 
 (defn valid-values-for [board coord]
-  nil)
+  (if-not (zero? (value-at board coord)) #{}
+          (set/difference all-values 
+                          (block-values board coord)
+                          (row-values board coord)
+                          (col-values board coord))))
 
 (defn filled? [board]
-  nil)
+  (not (contains? (set (flatten board)) 0)))
 
 (defn rows [board]
-  nil)
+  (for [row board]
+    (set row)))
 
 (defn valid-rows? [board]
   nil)
 
 (defn cols [board]
-  nil)
+  (for [col (range 0 9)]
+    (set (col-values board [0 col]))))
 
 (defn valid-cols? [board]
   nil)
