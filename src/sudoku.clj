@@ -91,11 +91,27 @@
 (defn set-value-at [board coord new-value]
   (assoc-in board coord new-value))
 
+(defn find-empty-point-helper [board]
+  (for [row [0 1 2 3 4 5 6 7 8]
+        col [0 1 2 3 4 5 6 7 8]]
+    (if (zero? (value-at board [row col]))
+        [row col]
+        nil)))
+
 (defn find-empty-point [board]
-  (let [coords (for [row [0 1 2 3 4 5 6 7 8]
-                     col [0 1 2 3 4 5 6 7 8]]
-                 [row col])]
-   (if (= 0 (value-at board [coord])))))
+  (first (filter (fn [x] (not (nil? x)))
+                   (find-empty-point-helper board))))
+
+(defn solve-helper [board]
+  (let [next-empty-coord (find-empty-point board)]
+    (if (filled? board)
+      (if (valid-solution? board)
+        [board]
+        '())
+      (for [valid-value (valid-values-for board next-empty-coord)
+            solution (solve-helper 
+                      (set-value-at board next-empty-coord valid-value))]
+        solution))))
 
 (defn solve [board]
-  nil)
+  (first (solve-helper board)))
